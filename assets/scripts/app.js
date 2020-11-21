@@ -21,7 +21,23 @@ const updateUI = () => {
   }
 };
 
-const renderNewMovieElement = (title, imageUrl, rating) => {
+const deleteMovieHandler = (movieId) => {
+  let movieIndex = 0;
+  for (const movie of movies) {
+    if (movie.id === movieId) {
+      break;
+    }
+    movieIndex++;
+  }
+  movies.splice(movieIndex, 1);
+  const listRoot = document.getElementById("movie-list");
+  //element to remove
+  listRoot.children[movieIndex].remove();
+  //old way to remove it
+  //listRoot.removeChild(listRoot.children[movieIndex]);
+};
+
+const renderNewMovieElement = (id, title, imageUrl, rating) => {
   const newMovieElement = document.createElement("li");
   newMovieElement.className = "movie-element";
   newMovieElement.innerHTML = `
@@ -33,6 +49,7 @@ const renderNewMovieElement = (title, imageUrl, rating) => {
     <p>${rating}/5 stars</p>
 </div>`;
 
+  newMovieElement.addEventListener("click", deleteMovieHandler.bind(null, id));
   const listRoot = document.getElementById("movie-list");
   listRoot.appendChild(newMovieElement);
 };
@@ -74,6 +91,7 @@ const addMovieHandler = () => {
   }
 
   newMovie = {
+    id: Math.random().toString(), //not guarantee to get unique ID bt for this exerciseit's acceptable
     title: titleValue,
     imageUrl: imageUrlValue,
     rating: ratingValue,
@@ -84,7 +102,12 @@ const addMovieHandler = () => {
   console.log(movies);
   toggleMovieModal();
   clearMovieInput();
-  renderNewMovieElement(newMovie.title, newMovie.imageUrl, newMovie.rating);
+  renderNewMovieElement(
+    newMovie.id,
+    newMovie.title,
+    newMovie.imageUrl,
+    newMovie.rating
+  );
   updateUI();
 };
 
